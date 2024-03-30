@@ -12,23 +12,23 @@ class Face_Recognition_System:
         
         #College name photo
         img1=Image.open("D:\PROJECT\FACE RECOGNITION ATTENDANCE SYSTEM\College-Project\pictures-bg\College name.png")
-        img1=img1.resize((1530,130))
+        img1=img1.resize((1550,130))
         self.Clg_img=ImageTk.PhotoImage(img1)
         
         lbl1=Label(self.root,image=self.Clg_img)
-        lbl1.place(x=0,y=0,width=1530,height=130)
+        lbl1.place(x=0,y=0,width=1550,height=130)
         
         
         #bg image
         img2=Image.open(r"D:\PROJECT\FACE RECOGNITION ATTENDANCE SYSTEM\College-Project\pictures-bg\fr_system.jpg")
-        img2=img2.resize((1530,710))
+        img2=img2.resize((1550,715))
         self.bg_img=ImageTk.PhotoImage(img2)
         
         bg_img_lbl=Label(self.root,image=self.bg_img)
-        bg_img_lbl.place(x=0,y=130,width=1530,height=710)
+        bg_img_lbl.place(x=0,y=130,width=1550,height=715)
         
         title_lbl=Label(bg_img_lbl,text="FACE RECOGNITION ATTENDANCE SYSTEM",font=("times new roman",35,"bold"),bg="white",fg="blue")
-        title_lbl.place(x=0,y=0,width=1530,height=45)
+        title_lbl.place(x=0,y=0,width=1550,height=45)
         
         
         
