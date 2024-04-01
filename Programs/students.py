@@ -2,6 +2,8 @@ from tkinter import *
 import tkinter as tk
 from tkinter import ttk
 from PIL import Image,ImageTk
+from tkinter import messagebox
+import mysql.connector
 
 
 class Student:
@@ -9,6 +11,23 @@ class Student:
         self.root=root
         self.root.geometry("1530x790+0+0")
         self.root.title("Student Details")
+        
+        
+        
+        # ===============Variables=============
+        self.var_br=StringVar()
+        self.var_year=StringVar()
+        self.var_sem=StringVar()
+        self.var_course=StringVar()
+        self.var_regd=StringVar()
+        self.var_roll=StringVar()
+        self.var_name=StringVar()
+        self.var_gender=StringVar()
+        self.var_dob=StringVar()
+        self.var_city=StringVar()
+        self.var_phone=StringVar()
+        self.var_email=StringVar()
+        self.var_photo=StringVar()
         
         
         
@@ -47,7 +66,7 @@ class Student:
         branch_lbl.place(x=0,y=110,width=150,height=40)
         
         
-        branch_combo= ttk.Combobox(bg_img_lbl,font=("times new roman",15),width=17,state="readonly")
+        branch_combo= ttk.Combobox(bg_img_lbl,textvariable=self.var_br,font=("times new roman",15),width=17,state="readonly")
         branch_combo["values"]=("Select Branch","MCA","CSc")
         branch_combo.current(0)
         branch_combo.place(x=150,y=110,width=150,height=40)
@@ -58,7 +77,7 @@ class Student:
         year_lbl.place(x=0,y=160,width=150,height=40)
         
         
-        year_combo= ttk.Combobox(bg_img_lbl,font=("times new roman",15),width=17,state="readonly")
+        year_combo= ttk.Combobox(bg_img_lbl,textvariable=self.var_year,font=("times new roman",15),width=17,state="readonly")
         year_combo["values"]=("Select Year","1st","2nd","3rd","4th")
         year_combo.current(0)
         year_combo.place(x=150,y=160,width=150,height=40)
@@ -69,7 +88,7 @@ class Student:
         course_lbl.place(x=350,y=110,width=150,height=40)
         
         
-        course_combo= ttk.Combobox(bg_img_lbl,font=("times new roman",15),width=17,state="readonly")
+        course_combo= ttk.Combobox(bg_img_lbl,textvariable=self.var_course,font=("times new roman",15),width=17,state="readonly")
         course_combo["values"]=("Select Course","C","C++","java","python")
         course_combo.current(0)
         course_combo.place(x=500,y=110,width=150,height=40)
@@ -80,7 +99,7 @@ class Student:
         semester_lbl.place(x=350,y=160,width=150,height=40)
         
         
-        semester_combo= ttk.Combobox(bg_img_lbl,font=("times new roman",15),width=17,state="readonly")
+        semester_combo= ttk.Combobox(bg_img_lbl,textvariable=self.var_sem,font=("times new roman",15),width=17,state="readonly")
         semester_combo["values"]=("Select Semester","1st","2nd","3rd","4th","5th","6th","7th","8th")
         semester_combo.current(0)
         semester_combo.place(x=500,y=160,width=150,height=40)
@@ -95,7 +114,7 @@ class Student:
         regd_lbl.place(x=0,y=280,width=175,height=30)
         
         
-        regd_entry= ttk.Entry(bg_img_lbl,font=("times new roman",15),width=17)
+        regd_entry= ttk.Entry(bg_img_lbl,textvariable=self.var_regd,font=("times new roman",15),width=17)
         regd_entry.place(x=175,y=280,width=200,height=30)
         
         
@@ -104,7 +123,7 @@ class Student:
         roll_lbl.place(x=400,y=280,width=175,height=30)
         
         
-        roll_entry= ttk.Entry(bg_img_lbl,font=("times new roman",15),width=17)
+        roll_entry= ttk.Entry(bg_img_lbl,textvariable=self.var_roll,font=("times new roman",15),width=17)
         roll_entry.place(x=575,y=280,width=200,height=30)
         
         
@@ -113,7 +132,7 @@ class Student:
         name_lbl.place(x=0,y=320,width=175,height=30)
         
         
-        name_entry= ttk.Entry(bg_img_lbl,font=("times new roman",15),width=17)
+        name_entry= ttk.Entry(bg_img_lbl,textvariable=self.var_name,font=("times new roman",15),width=17)
         name_entry.place(x=175,y=320,width=200,height=30)
         
         
@@ -122,7 +141,7 @@ class Student:
         gender_lbl.place(x=400,y=320,width=175,height=30)
         
         
-        gender_entry= ttk.Entry(bg_img_lbl,font=("times new roman",15),width=17)
+        gender_entry= ttk.Entry(bg_img_lbl,textvariable=self.var_gender,font=("times new roman",15),width=17)
         gender_entry.place(x=575,y=320,width=200,height=30)
         
         
@@ -131,7 +150,7 @@ class Student:
         DOB_lbl.place(x=0,y=360,width=175,height=30)
         
         
-        DOB_entry= ttk.Entry(bg_img_lbl,font=("times new roman",15),width=17)
+        DOB_entry= ttk.Entry(bg_img_lbl,textvariable=self.var_dob,font=("times new roman",15),width=17)
         DOB_entry.place(x=175,y=360,width=200,height=30)
         
         
@@ -140,7 +159,7 @@ class Student:
         city_lbl.place(x=400,y=360,width=175,height=30)
         
         
-        city_entry= ttk.Entry(bg_img_lbl,font=("times new roman",15),width=17)
+        city_entry= ttk.Entry(bg_img_lbl,textvariable=self.var_city,font=("times new roman",15),width=17)
         city_entry.place(x=575,y=360,width=200,height=30)
         
         
@@ -149,7 +168,7 @@ class Student:
         phone_lbl.place(x=0,y=400,width=175,height=30)
         
         
-        phone_entry= ttk.Entry(bg_img_lbl,font=("times new roman",15),width=17)
+        phone_entry= ttk.Entry(bg_img_lbl,textvariable=self.var_phone,font=("times new roman",15),width=17)
         phone_entry.place(x=175,y=400,width=200,height=30)
         
         
@@ -158,17 +177,21 @@ class Student:
         email_lbl.place(x=400,y=400,width=175,height=30)
         
         
-        email_entry= ttk.Entry(bg_img_lbl,font=("times new roman",15),width=17)
+        email_entry= ttk.Entry(bg_img_lbl,textvariable=self.var_email,font=("times new roman",15),width=17)
         email_entry.place(x=575,y=400,width=200,height=30)
         
         # Radio buttons
-        radiobtn1=ttk.Radiobutton(bg_img_lbl,text="Take Photo Sample",value="Yes")
+        self.var_rbtn1=StringVar()
+        radiobtn1=ttk.Radiobutton(bg_img_lbl,variable=self.var_rbtn1,text="Take Photo Sample",value="Yes")
         radiobtn1.place(x=20,y=435,width=150,height=40)
         
-        radiobtn2=ttk.Radiobutton(bg_img_lbl,text="No Photo Sample",value="Yes")
+        self.var_rbtn2=StringVar()
+        radiobtn2=ttk.Radiobutton(bg_img_lbl,variable=self.var_rbtn1,text="No Photo Sample",value="No")
         radiobtn2.place(x=200,y=435,width=150,height=40)
         
-        save_btn=Button(bg_img_lbl,text="Save",cursor="hand2",font=("times new roman",15,"bold"),bg="darkblue",fg="white")
+        
+        #All buttons set
+        save_btn=Button(bg_img_lbl,command=self.add_data,text="Save",cursor="hand2",font=("times new roman",15,"bold"),bg="darkblue",fg="white")
         save_btn.place(x=0,y=500,width=194,height=60)
         
         update_btn=Button(bg_img_lbl,text="Update",cursor="hand2",font=("times new roman",15,"bold"),bg="darkblue",fg="white")
@@ -191,6 +214,8 @@ class Student:
         searching_system_lbl=Label(bg_img_lbl,text="Searching System",font=("times new roman",15,"bold"),bg="yellow",fg="blue")
         searching_system_lbl.place(x=777,y=45,width=775,height=40)
         
+        
+        # Searching system set
         search_by_lbl=Label(bg_img_lbl,text="Search By : ",font=("times new roman",15,"bold"),bg="red",fg="black")
         search_by_lbl.place(x=780,y=105,width=110,height=30)
         
@@ -213,6 +238,8 @@ class Student:
         table_frame=Frame(bg_img_lbl,bd=2,bg="white",relief=RIDGE)
         table_frame.place(x=777,y=145,width=750,height=520)
         
+        
+        #ScrollBar set
         scroll_x=ttk.Scrollbar(table_frame,orient=HORIZONTAL)
         scroll_y=ttk.Scrollbar(table_frame,orient=VERTICAL)
         
@@ -223,6 +250,8 @@ class Student:
         scroll_x.config(command=self.student_table.xview)
         scroll_y.config(command=self.student_table.yview)
         
+        
+        #Table heading set
         self.student_table.heading("Branch",text="Branch")
         self.student_table.heading("Year",text="Year")
         self.student_table.heading("Semester",text="Semester")
@@ -237,6 +266,8 @@ class Student:
         self.student_table.heading("Photo",text="Photo")
         self.student_table["show"]="headings"
         
+        
+        #Table heading width set
         self.student_table.column("Branch",width=100)
         self.student_table.column("Year",width=100)
         self.student_table.column("Semester",width=100)
@@ -252,7 +283,43 @@ class Student:
         
         self.student_table.pack(fill=BOTH,expand=1)
         
+    def add_data(self):
+        if self.var_br.get()=="Select Branch" or self.var_name.get()=="" or self.var_regd.get()=="" or self.var_roll.get()=="":
+            messagebox.showerror("Error","All fields are required",parent=self.root)
+        else:
+            try:
+                conn=mysql.connector.connect(host="localhost",username="root",password="Rakesh@347",database="face_recognition")
+                my_cursor=conn.cursor()
+                my_cursor.execute("insert into STUDENT VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",(
+                                                                                                    self.var_br.get(),
+                                                                                                    self.var_year.get(),
+                                                                                                    self.var_sem.get(),
+                                                                                                    self.var_regd.get(),
+                                                                                                    self.var_roll.get(),
+                                                                                                    self.var_name.get(),
+                                                                                                    self.var_gender.get(),
+                                                                                                    self.var_dob.get(),
+                                                                                                    self.var_city.get(),
+                                                                                                    self.var_phone.get(),
+                                                                                                    self.var_email.get(),
+                                                                                                    self.var_rbtn1.get(),
+                                                                                                ))
+                conn.commit()
+                conn.close()
+                messagebox.showinfo("Success","Student details has been added succeessfully",parent=self.root)
+            except Exception as es:
+                messagebox.showerror("Error",f"Due To :{str(es)}",parent=self.root)
         
+        
+        
+        
+        
+        
+        
+        
+        
+    
+           
         
 if __name__=="__main__":
     root=Tk()
