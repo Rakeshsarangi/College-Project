@@ -140,9 +140,10 @@ class Student:
         gender_lbl=Label(bg_img_lbl,text="Gender : ",font=("times new roman",15,"bold"),fg="black",)
         gender_lbl.place(x=400,y=320,width=175,height=30)
         
-        
-        gender_entry= ttk.Entry(bg_img_lbl,textvariable=self.var_gender,font=("times new roman",15),width=17)
-        gender_entry.place(x=575,y=320,width=200,height=30)
+        gender_combo= ttk.Combobox(bg_img_lbl,textvariable=self.var_gender,font=("times new roman",15),width=17,state="readonly")
+        gender_combo["values"]=("Select Gender","M","F","O")
+        gender_combo.current(0)
+        gender_combo.place(x=575,y=320,width=200,height=30)
         
         
         #DOB entry
@@ -194,13 +195,13 @@ class Student:
         save_btn=Button(bg_img_lbl,command=self.add_data,text="Save",cursor="hand2",font=("times new roman",15,"bold"),bg="darkblue",fg="white")
         save_btn.place(x=0,y=500,width=194,height=60)
         
-        update_btn=Button(bg_img_lbl,text="Update",cursor="hand2",font=("times new roman",15,"bold"),bg="darkblue",fg="white")
+        update_btn=Button(bg_img_lbl,command=self.update_data,text="Update",cursor="hand2",font=("times new roman",15,"bold"),bg="darkblue",fg="white")
         update_btn.place(x=194,y=500,width=194,height=60)
         
-        delete_btn=Button(bg_img_lbl,text="Delete",cursor="hand2",font=("times new roman",15,"bold"),bg="darkblue",fg="white")
+        delete_btn=Button(bg_img_lbl,command=self.delete_data,text="Delete",cursor="hand2",font=("times new roman",15,"bold"),bg="darkblue",fg="white")
         delete_btn.place(x=388,y=500,width=194,height=60)
         
-        reset_btn=Button(bg_img_lbl,text="Reset",cursor="hand2",font=("times new roman",15,"bold"),bg="darkblue",fg="white")
+        reset_btn=Button(bg_img_lbl,command=self.rest_data,text="Reset",cursor="hand2",font=("times new roman",15,"bold"),bg="darkblue",fg="white")
         reset_btn.place(x=582,y=500,width=194,height=60)
         
         take_photo_btn=Button(bg_img_lbl,text="Take Photo Sample",cursor="hand2",font=("times new roman",15,"bold"),bg="darkblue",fg="white")
@@ -282,6 +283,8 @@ class Student:
         self.student_table.column("Photo",width=150)
         
         self.student_table.pack(fill=BOTH,expand=1)
+        self.student_table.bind("<ButtonRelease>",self.get_cursor)
+        self.fetch_data()
         
     def add_data(self):
         if self.var_br.get()=="Select Branch" or self.var_name.get()=="" or self.var_regd.get()=="" or self.var_roll.get()=="":
@@ -305,6 +308,7 @@ class Student:
                                                                                                     self.var_rbtn1.get(),
                                                                                                 ))
                 conn.commit()
+                self.fetch_data()
                 conn.close()
                 messagebox.showinfo("Success","Student details has been added succeessfully",parent=self.root)
             except Exception as es:
@@ -312,15 +316,115 @@ class Student:
         
         
         
+    # ===================Fetch Data====================
+    def fetch_data(self):
+        conn=mysql.connector.connect(host="localhost",username="root",password="Rakesh@347",database="face_recognition")
+        my_cursor=conn.cursor()
+        my_cursor.execute("select * from student")
+        data=my_cursor.fetchall()
         
+        if len(data)!=0:
+            self.student_table.delete(*self.student_table.get_children())
+            for i in data:
+                self.student_table.insert("",END,values=i)
+            conn.commit()
+        conn.close()
         
+    # =============Get cursor==============
+    def get_cursor(self,event=""):
+        cursor_focus=self.student_table.focus()
+        content=self.student_table.item(cursor_focus)
+        data=content["values"]
         
+        self.var_br.set(data[0]),
+        self.var_year.set(data[1]),
+        self.var_sem.set(data[2]),
+        self.var_regd.set(data[3]),
+        self.var_roll.set(data[4]),
+        self.var_name.set(data[5]),
+        self.var_gender.set(data[6]),
+        self.var_dob.set(data[7]),
+        self.var_city.set(data[8]),
+        self.var_phone.set(data[9]),
+        self.var_email.set(data[10]),
+        self.var_rbtn1.set(data[11])
         
-        
-        
-    
+    # ========Update Function=============
+    def update_data(self):
+        if self.var_br.get()=="Select Branch" or self.var_name.get()=="" or self.var_regd.get()=="" or self.var_roll.get()=="":
+            messagebox.showerror("Error","All fields are required",parent=self.root)
+        else:
+            try:
+                update=messagebox.askyesno("Update","do you want to update this details",parent=self.root)
+                if update>0:
+                    conn=mysql.connector.connect(host="localhost",username="root",password="Rakesh@347",database="face_recognition")
+                    my_cursor=conn.cursor()
+                    my_cursor.execute("update student set Branch=%s,Year=%s,Semester=%s,Regd_no=%s,s_name=%s,Gender=%s,DOB=%s,City=%s,Phone_no=%s,email=%s,Photo=%s where Roll_no=%s",(
+                                                                                                                                                                                        self.var_br.get(),
+                                                                                                                                                                                        self.var_year.get(),
+                                                                                                                                                                                        self.var_sem.get(),
+                                                                                                                                                                                        self.var_regd.get(),
+                                                                                                                                                                                        self.var_name.get(),
+                                                                                                                                                                                        self.var_gender.get(),
+                                                                                                                                                                                        self.var_dob.get(),
+                                                                                                                                                                                        self.var_city.get(),
+                                                                                                                                                                                        self.var_phone.get(),
+                                                                                                                                                                                        self.var_email.get(),
+                                                                                                                                                                                        self.var_rbtn1.get(),
+                                                                                                                                                                                        self.var_roll.get()
+                                                                                                                                                                                    ))
+                else:
+                    if not update:
+                        return
+                messagebox.showinfo("Success","Student Detailes updated successfully",parent=self.root)
+                conn.commit()
+                self.fetch_data()
+                conn.close()
+            except Exception as e:
+                messagebox.showerror("Error",f"Due to:{str(e)}",parent=self.root)
            
-        
+           
+    # ==========delete functio===========
+    def delete_data(self):
+        if self.var_roll.get()=="":
+            messagebox.showerror("Error","Student roll no.must be required",parent=self.root)
+        else:
+            try:
+                delete=messagebox.askyesno("Student Delete Page","Do you want to delete this student",parent=self.root)
+                if delete>0:
+                    conn=mysql.connector.connect(host="localhost",username="root",password="Rakesh@347",database="face_recognition")
+                    my_cursor=conn.cursor()
+                    sql="delete from student where roll_no=%s"
+                    val=(self.var_roll.get(),)
+                    my_cursor.execute(sql,val)
+                else:
+                    if not delete:
+                        return
+                    
+                conn.commit()
+                self.fetch_data()
+                conn.close()
+                messagebox.showinfo("Delete","Student Detailes deleted successfully",parent=self.root)
+            except Exception as e:
+                messagebox.showerror("Error",f"Due to:{str(e)}",parent=self.root)
+                
+                
+    # ===========reset function=============
+    def rest_data(self):
+        self.var_br.set("Select Branch"),
+        self.var_year.set("Select Year"),
+        self.var_sem.set("Select Semester"),
+        self.var_regd.set(""),
+        self.var_roll.set(""),
+        self.var_name.set(""),
+        self.var_gender.set("Select Gender"),
+        self.var_dob.set(""),
+        self.var_city.set(""),
+        self.var_phone.set(""),
+        self.var_email.set(""),
+        self.var_rbtn1.set("")
+                
+                
 if __name__=="__main__":
     root=Tk()
     obj=Student(root)
