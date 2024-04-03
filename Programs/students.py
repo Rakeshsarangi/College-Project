@@ -4,6 +4,7 @@ from tkinter import ttk
 from PIL import Image,ImageTk
 from tkinter import messagebox
 import mysql.connector
+import cv2
 
 
 class Student:
@@ -199,12 +200,12 @@ class Student:
         update_btn.place(x=194,y=500,width=194,height=60)
         
         delete_btn=Button(bg_img_lbl,command=self.delete_data,text="Delete",cursor="hand2",font=("times new roman",15,"bold"),bg="darkblue",fg="white")
-        delete_btn.place(x=388,y=500,width=194,height=60)
+        delete_btn.place(x=388,y=500,width=194,height=60) 
         
         reset_btn=Button(bg_img_lbl,command=self.rest_data,text="Reset",cursor="hand2",font=("times new roman",15,"bold"),bg="darkblue",fg="white")
         reset_btn.place(x=582,y=500,width=194,height=60)
         
-        take_photo_btn=Button(bg_img_lbl,text="Take Photo Sample",cursor="hand2",font=("times new roman",15,"bold"),bg="darkblue",fg="white")
+        take_photo_btn=Button(bg_img_lbl,command=self.generate_dataset,text="Take Photo Sample",cursor="hand2",font=("times new roman",15,"bold"),bg="darkblue",fg="white")
         take_photo_btn.place(x=0,y=570,width=387,height=60)
         
         update_photo_btn=Button(bg_img_lbl,text="Update Photo Sample",cursor="hand2",font=("times new roman",15,"bold"),bg="darkblue",fg="white")
@@ -423,6 +424,75 @@ class Student:
         self.var_phone.set(""),
         self.var_email.set(""),
         self.var_rbtn1.set("")
+        
+        
+        
+    # ==========_==Generate Dataset and Take photo sample=================
+    def generate_dataset(self):
+        if self.var_br.get()=="Select Branch" or self.var_name.get()=="" or self.var_regd.get()=="" or self.var_roll.get()=="":
+            messagebox.showerror("Error","All fields are required",parent=self.root)
+        else:
+            try:
+                conn=mysql.connector.connect(host="localhost",username="root",password="Rakesh@347",database="face_recognition")
+                my_cursor=conn.cursor()
+                my_cursor.execute("select * from student")
+                myresult=my_cursor.fetchall()
+                id=0
+                for x in myresult:
+                    id+=1
+                my_cursor.execute("update student set Branch=%s,Year=%s,Semester=%s,Regd_no=%s,s_name=%s,Gender=%s,DOB=%s,City=%s,Phone_no=%s,email=%s,Photo=%s where Roll_no=%s",(
+                                                                                                                                                                                        self.var_br.get(),
+                                                                                                                                                                                        self.var_year.get(),
+                                                                                                                                                                                        self.var_sem.get(),
+                                                                                                                                                                                        self.var_regd.get(),
+                                                                                                                                                                                        self.var_name.get(),
+                                                                                                                                                                                        self.var_gender.get(),
+                                                                                                                                                                                        self.var_dob.get(),
+                                                                                                                                                                                        self.var_city.get(),
+                                                                                                                                                                                        self.var_phone.get(),
+                                                                                                                                                                                        self.var_email.get(),
+                                                                                                                                                                                        self.var_rbtn1.get(),
+                                                                                                                                                                                        self.var_roll.get()
+                                                                                                                                                                                    ))
+                conn.commit()
+                self.fetch_data()
+                self.rest_data()
+                conn.close()
+                
+                # ===========Load predefined data on face frontals from opencv==========
+                face_classfier=cv2.CascadeClassifier("D:\PROJECT\FACE RECOGNITION ATTENDANCE SYSTEM\College-Project\Programs\haarcascade_frontalface_default.xml")
+                
+                def face_cropped(img):
+                    gray_scale=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+                    faces=face_classfier.detectMultiScale(gray_scale,1.3,5)
+                    for(x,y,w,h) in faces:
+                        face_cropped=img[y:y+h,x:x+w]
+                        return face_cropped
+                cap=cv2.VideoCapture(0)
+                img_id=0
+                while True:
+                    ret,myframe=cap.read()
+                    if face_cropped(myframe) is not None:
+                        img_id+=1
+                        face=cv2.resize(face_cropped(myframe),(450,450))
+                        face=cv2.cvtColor(face,cv2.COLOR_BGR2GRAY)
+                        file_name_path="D:\PROJECT\FACE RECOGNITION ATTENDANCE SYSTEM\College-Project\Student pictures/student."+str(id)+"."+str(img_id)+".jpg"
+                        cv2.imwrite(file_name_path,face)
+                        cv2.putText(face,str(img_id),(50,50),cv2.FONT_HERSHEY_COMPLEX,1,(0,255,0),2)
+                        cv2.imshow("Cropped Face",face)
+                    
+                    if cv2.waitKey(1)==13 or int(img_id)==100:
+                        break
+                cap.release()
+                cv2.destroyAllWindows()
+                messagebox.showinfo("Result","Generating Dataset completed!!!")
+            except Exception as e:
+                messagebox.showerror("Error",f"Due to:{str(e)}",parent=self.root)
+                
+                
+                
+                
+                
                 
                 
 if __name__=="__main__":
