@@ -1,7 +1,9 @@
 from tkinter import *
 from tkinter import ttk
 from PIL import Image,ImageTk
+import os
 from students import Student
+from train import Train
 
 
 class Face_Recognition_System:
@@ -90,10 +92,10 @@ class Face_Recognition_System:
         img7=img7.resize((220,220))
         self.train_data_img=ImageTk.PhotoImage(img7)
         
-        b5=Button(bg_img_lbl,image=self.train_data_img,cursor="hand2")
+        b5=Button(bg_img_lbl,image=self.train_data_img,command=self.train_data,cursor="hand2")
         b5.place(x=250,y=430,width=220,height=220)
         
-        b5_1=Button(bg_img_lbl,text="Train Data",cursor="hand2",font=("times new roman",15,"bold"),bg="darkblue",fg="white")
+        b5_1=Button(bg_img_lbl,text="Train Data",command=self.train_data,cursor="hand2",font=("times new roman",15,"bold"),bg="darkblue",fg="white")
         b5_1.place(x=250,y=650,width=220,height=40)
         
         
@@ -103,10 +105,10 @@ class Face_Recognition_System:
         img8=img8.resize((220,220))
         self.photos_img=ImageTk.PhotoImage(img8)
         
-        b6=Button(bg_img_lbl,image=self.photos_img,cursor="hand2")
+        b6=Button(bg_img_lbl,image=self.photos_img,cursor="hand2",command=self.open_img)
         b6.place(x=500,y=430,width=220,height=220)
         
-        b6_1=Button(bg_img_lbl,text="Photos",cursor="hand2",font=("times new roman",15,"bold"),bg="darkblue",fg="white")
+        b6_1=Button(bg_img_lbl,text="Photos",cursor="hand2",command=self.open_img,font=("times new roman",15,"bold"),bg="darkblue",fg="white")
         b6_1.place(x=500,y=650,width=220,height=40)
         
         
@@ -134,12 +136,17 @@ class Face_Recognition_System:
         
         b8_1=Button(bg_img_lbl,text="Exit",cursor="hand2",font=("times new roman",15,"bold"),bg="darkblue",fg="white")
         b8_1.place(x=1000,y=650,width=220,height=40)
+    def open_img(self):
+        os.startfile("D:\PROJECT\FACE RECOGNITION ATTENDANCE SYSTEM\College-Project\Student pictures")    
         
-        
-        # ==============Function Buttons=====================
+    # ==============Function Buttons=====================
     def student_details(self):
         self.new_window=Toplevel(self.root)
         self.app=Student(self.new_window)
+        
+    def train_data(self):
+        self.new_window=Toplevel(self.root)
+        self.app=Train(self.new_window)
         
 
 

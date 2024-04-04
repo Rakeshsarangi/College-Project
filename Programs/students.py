@@ -33,7 +33,7 @@ class Student:
         
         
         #College name photo
-        img1=Image.open("D:\PROJECT\FACE RECOGNITION ATTENDANCE SYSTEM\College-Project\pictures-bg\College name.png")
+        img1=Image.open(r"D:\PROJECT\FACE RECOGNITION ATTENDANCE SYSTEM\College-Project\pictures-bg\College name.png")
         img1=img1.resize((1550,130))
         self.Clg_img=ImageTk.PhotoImage(img1)
         
@@ -460,7 +460,7 @@ class Student:
                 conn.close()
                 
                 # ===========Load predefined data on face frontals from opencv==========
-                face_classfier=cv2.CascadeClassifier("D:\PROJECT\FACE RECOGNITION ATTENDANCE SYSTEM\College-Project\Programs\haarcascade_frontalface_default.xml")
+                face_classfier=cv2.CascadeClassifier(r"D:\PROJECT\FACE RECOGNITION ATTENDANCE SYSTEM\College-Project\Programs\haarcascade_frontalface_default.xml")
                 
                 def face_cropped(img):
                     gray_scale=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
@@ -476,7 +476,7 @@ class Student:
                         img_id+=1
                         face=cv2.resize(face_cropped(myframe),(450,450))
                         face=cv2.cvtColor(face,cv2.COLOR_BGR2GRAY)
-                        file_name_path="D:\PROJECT\FACE RECOGNITION ATTENDANCE SYSTEM\College-Project\Student pictures/student."+str(id)+"."+str(img_id)+".jpg"
+                        file_name_path=r"D:\PROJECT\FACE RECOGNITION ATTENDANCE SYSTEM\College-Project\Student pictures/student."+str(id)+"."+str(img_id)+".jpg"
                         cv2.imwrite(file_name_path,face)
                         cv2.putText(face,str(img_id),(50,50),cv2.FONT_HERSHEY_COMPLEX,1,(0,255,0),2)
                         cv2.imshow("Cropped Face",face)
