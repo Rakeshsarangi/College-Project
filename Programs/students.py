@@ -16,6 +16,7 @@ class Student:
         
         
         # ===============Variables=============
+        self.var_id=StringVar()
         self.var_br=StringVar()
         self.var_year=StringVar()
         self.var_sem=StringVar()
@@ -205,11 +206,9 @@ class Student:
         reset_btn=Button(bg_img_lbl,command=self.rest_data,text="Reset",cursor="hand2",font=("times new roman",15,"bold"),bg="darkblue",fg="white")
         reset_btn.place(x=582,y=500,width=194,height=60)
         
-        take_photo_btn=Button(bg_img_lbl,command=self.generate_dataset,text="Take Photo Sample",cursor="hand2",font=("times new roman",15,"bold"),bg="darkblue",fg="white")
-        take_photo_btn.place(x=0,y=570,width=387,height=60)
+        import_btn=Button(bg_img_lbl,text="Import from Csv",cursor="hand2",font=("times new roman",15,"bold"),bg="darkblue",fg="white")
+        import_btn.place(x=150,y=570,width=387,height=60)
         
-        update_photo_btn=Button(bg_img_lbl,text="Update Photo Sample",cursor="hand2",font=("times new roman",15,"bold"),bg="darkblue",fg="white")
-        update_photo_btn.place(x=388,y=570,width=387,height=60)
         
         
         #searching system title
@@ -245,7 +244,7 @@ class Student:
         scroll_x=ttk.Scrollbar(table_frame,orient=HORIZONTAL)
         scroll_y=ttk.Scrollbar(table_frame,orient=VERTICAL)
         
-        self.student_table=ttk.Treeview(table_frame,columns=("Branch","Year","Semester","Regd no","roll no","Name","Gender","DOB","City","Phone no","email","Photo"),xscrollcommand=scroll_x.set,yscrollcommand=scroll_y.set)
+        self.student_table=ttk.Treeview(table_frame,columns=("Branch","Course","Year","Semester","Regd no","roll no","Name","Gender","DOB","City","Phone no","email","Photo"),xscrollcommand=scroll_x.set,yscrollcommand=scroll_y.set)
         
         scroll_x.pack(side=BOTTOM,fill=X)
         scroll_y.pack(side=RIGHT,fill=Y)
@@ -255,6 +254,7 @@ class Student:
         
         #Table heading set
         self.student_table.heading("Branch",text="Branch")
+        self.student_table.heading("Course",text="Course")
         self.student_table.heading("Year",text="Year")
         self.student_table.heading("Semester",text="Semester")
         self.student_table.heading("Regd no",text="Regd no")
@@ -271,6 +271,7 @@ class Student:
         
         #Table heading width set
         self.student_table.column("Branch",width=100)
+        self.student_table.column("Course",width=100)
         self.student_table.column("Year",width=100)
         self.student_table.column("Semester",width=100)
         self.student_table.column("Regd no",width=100)
@@ -280,7 +281,7 @@ class Student:
         self.student_table.column("DOB",width=100)
         self.student_table.column("City",width=100)
         self.student_table.column("Phone no",width=100)
-        self.student_table.column("email",width=100)
+        self.student_table.column("email",width=150)
         self.student_table.column("Photo",width=150)
         
         self.student_table.pack(fill=BOTH,expand=1)
@@ -294,8 +295,9 @@ class Student:
             try:
                 conn=mysql.connector.connect(host="localhost",username="root",password="Rakesh@347",database="face_recognition")
                 my_cursor=conn.cursor()
-                my_cursor.execute("insert into STUDENT VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",(
+                my_cursor.execute("insert into STUDENT (Branch,Course,Year,Semester,Regd_no,roll_no,s_Name,Gender,DOB,City,Phone_no,email,Photo) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",(
                                                                                                     self.var_br.get(),
+                                                                                                    self.var_course.get(),
                                                                                                     self.var_year.get(),
                                                                                                     self.var_sem.get(),
                                                                                                     self.var_regd.get(),
@@ -321,7 +323,7 @@ class Student:
     def fetch_data(self):
         conn=mysql.connector.connect(host="localhost",username="root",password="Rakesh@347",database="face_recognition")
         my_cursor=conn.cursor()
-        my_cursor.execute("select * from student")
+        my_cursor.execute("select Branch,Course,Year,Semester,Regd_no,roll_no,s_Name,Gender,DOB,City,Phone_no,email,Photo from student")
         data=my_cursor.fetchall()
         
         if len(data)!=0:
@@ -337,18 +339,19 @@ class Student:
         content=self.student_table.item(cursor_focus)
         data=content["values"]
         
-        self.var_br.set(data[0]),
-        self.var_year.set(data[1]),
-        self.var_sem.set(data[2]),
-        self.var_regd.set(data[3]),
-        self.var_roll.set(data[4]),
-        self.var_name.set(data[5]),
-        self.var_gender.set(data[6]),
-        self.var_dob.set(data[7]),
-        self.var_city.set(data[8]),
-        self.var_phone.set(data[9]),
-        self.var_email.set(data[10]),
-        self.var_rbtn1.set(data[11])
+        self.var_br.set(data[1]),
+        self.var_course.set(data[2]),
+        self.var_year.set(data[3]),
+        self.var_sem.set(data[4]),
+        self.var_regd.set(data[5]),
+        self.var_roll.set(data[6]),
+        self.var_name.set(data[7]),
+        self.var_gender.set(data[8]),
+        self.var_dob.set(data[9]),
+        self.var_city.set(data[10]),
+        self.var_phone.set(data[11]),
+        self.var_email.set(data[12]),
+        self.var_rbtn1.set(data[13])
         
     # ========Update Function=============
     def update_data(self):
@@ -360,8 +363,9 @@ class Student:
                 if update>0:
                     conn=mysql.connector.connect(host="localhost",username="root",password="Rakesh@347",database="face_recognition")
                     my_cursor=conn.cursor()
-                    my_cursor.execute("update student set Branch=%s,Year=%s,Semester=%s,Regd_no=%s,s_name=%s,Gender=%s,DOB=%s,City=%s,Phone_no=%s,email=%s,Photo=%s where Roll_no=%s",(
+                    my_cursor.execute("update student set Branch=%s,course=%s,Year=%s,Semester=%s,Regd_no=%s,s_name=%s,Gender=%s,DOB=%s,City=%s,Phone_no=%s,email=%s,Photo=%s where Roll_no=%s",(
                                                                                                                                                                                         self.var_br.get(),
+                                                                                                                                                                                        self.var_course.get(),
                                                                                                                                                                                         self.var_year.get(),
                                                                                                                                                                                         self.var_sem.get(),
                                                                                                                                                                                         self.var_regd.get(),
@@ -413,6 +417,7 @@ class Student:
     # ===========reset function=============
     def rest_data(self):
         self.var_br.set("Select Branch"),
+        self.var_br.set("Select Course"),
         self.var_year.set("Select Year"),
         self.var_sem.set("Select Semester"),
         self.var_regd.set(""),
@@ -426,68 +431,6 @@ class Student:
         self.var_rbtn1.set("")
         
         
-        
-    # ==========_==Generate Dataset and Take photo sample=================
-    def generate_dataset(self):
-        if self.var_br.get()=="Select Branch" or self.var_name.get()=="" or self.var_regd.get()=="" or self.var_roll.get()=="":
-            messagebox.showerror("Error","All fields are required",parent=self.root)
-        else:
-            try:
-                conn=mysql.connector.connect(host="localhost",username="root",password="Rakesh@347",database="face_recognition")
-                my_cursor=conn.cursor()
-                my_cursor.execute("select * from student")
-                myresult=my_cursor.fetchall()
-                id=0
-                for x in myresult:
-                    id+=1
-                my_cursor.execute("update student set Branch=%s,Year=%s,Semester=%s,Regd_no=%s,s_name=%s,Gender=%s,DOB=%s,City=%s,Phone_no=%s,email=%s,Photo=%s where Roll_no=%s",(
-                                                                                                                                                                                        self.var_br.get(),
-                                                                                                                                                                                        self.var_year.get(),
-                                                                                                                                                                                        self.var_sem.get(),
-                                                                                                                                                                                        self.var_regd.get(),
-                                                                                                                                                                                        self.var_name.get(),
-                                                                                                                                                                                        self.var_gender.get(),
-                                                                                                                                                                                        self.var_dob.get(),
-                                                                                                                                                                                        self.var_city.get(),
-                                                                                                                                                                                        self.var_phone.get(),
-                                                                                                                                                                                        self.var_email.get(),
-                                                                                                                                                                                        self.var_rbtn1.get(),
-                                                                                                                                                                                        self.var_roll.get()
-                                                                                                                                                                                    ))
-                conn.commit()
-                self.fetch_data()
-                self.rest_data()
-                conn.close()
-                
-                # ===========Load predefined data on face frontals from opencv==========
-                face_classfier=cv2.CascadeClassifier(r"D:\PROJECT\FACE RECOGNITION ATTENDANCE SYSTEM\College-Project\Programs\haarcascade_frontalface_default.xml")
-                
-                def face_cropped(img):
-                    gray_scale=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-                    faces=face_classfier.detectMultiScale(gray_scale,1.3,5)
-                    for(x,y,w,h) in faces:
-                        face_cropped=img[y:y+h,x:x+w]
-                        return face_cropped
-                cap=cv2.VideoCapture(0)
-                img_id=0
-                while True:
-                    ret,myframe=cap.read()
-                    if face_cropped(myframe) is not None:
-                        img_id+=1
-                        face=cv2.resize(face_cropped(myframe),(450,450))
-                        face=cv2.cvtColor(face,cv2.COLOR_BGR2GRAY)
-                        file_name_path=r"D:\PROJECT\FACE RECOGNITION ATTENDANCE SYSTEM\College-Project\Student pictures/student."+str(id)+"."+str(img_id)+".jpg"
-                        cv2.imwrite(file_name_path,face)
-                        cv2.putText(face,str(img_id),(50,50),cv2.FONT_HERSHEY_COMPLEX,1,(0,255,0),2)
-                        cv2.imshow("Cropped Face",face)
-                    
-                    if cv2.waitKey(1)==13 or int(img_id)==100:
-                        break
-                cap.release()
-                cv2.destroyAllWindows()
-                messagebox.showinfo("Result","Generating Dataset completed!!!")
-            except Exception as e:
-                messagebox.showerror("Error",f"Due to:{str(e)}",parent=self.root)
                 
                 
                 

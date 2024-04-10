@@ -4,6 +4,7 @@ from PIL import Image,ImageTk
 import os
 from students import Student
 from train import Train
+from face_recognition import Face_Recognition
 
 
 class Face_Recognition_System:
@@ -14,7 +15,7 @@ class Face_Recognition_System:
         
         
         #College name photo
-        img1=Image.open("D:\PROJECT\FACE RECOGNITION ATTENDANCE SYSTEM\College-Project\pictures-bg\College name.png")
+        img1=Image.open(r"D:\PROJECT\FACE RECOGNITION ATTENDANCE SYSTEM\College-Project\pictures-bg\College name.png")
         img1=img1.resize((1550,130))
         self.Clg_img=ImageTk.PhotoImage(img1)
         
@@ -36,7 +37,7 @@ class Face_Recognition_System:
         
         
         # Student Details Button
-        img3=Image.open("D:\PROJECT\FACE RECOGNITION ATTENDANCE SYSTEM\College-Project\pictures-bg\students.jpg")
+        img3=Image.open(r"D:\PROJECT\FACE RECOGNITION ATTENDANCE SYSTEM\College-Project\pictures-bg\students.jpg")
         img3=img3.resize((220,220))
         self.student_img=ImageTk.PhotoImage(img3)
         
@@ -53,10 +54,10 @@ class Face_Recognition_System:
         img4=img4.resize((220,220))
         self.face_detector_img=ImageTk.PhotoImage(img4)
         
-        b2=Button(bg_img_lbl,image=self.face_detector_img,cursor="hand2")
+        b2=Button(bg_img_lbl,image=self.face_detector_img,command=self.face_recognition,cursor="hand2")
         b2.place(x=500,y=100,width=220,height=220)
         
-        b2_1=Button(bg_img_lbl,text="Face Detector",cursor="hand2",font=("times new roman",15,"bold"),bg="darkblue",fg="white")
+        b2_1=Button(bg_img_lbl,text="Face Detector",command=self.face_recognition,cursor="hand2",font=("times new roman",15,"bold"),bg="darkblue",fg="white")
         b2_1.place(x=500,y=320,width=220,height=40)
         
         
@@ -75,7 +76,7 @@ class Face_Recognition_System:
         
         
         # Help Desk Button
-        img6=Image.open("D:\PROJECT\FACE RECOGNITION ATTENDANCE SYSTEM\College-Project\pictures-bg\help_desk.jpeg")
+        img6=Image.open(r"D:\PROJECT\FACE RECOGNITION ATTENDANCE SYSTEM\College-Project\pictures-bg\help_desk.jpeg")
         img6=img6.resize((220,220))
         self.help_desk_img=ImageTk.PhotoImage(img6)
         
@@ -101,7 +102,7 @@ class Face_Recognition_System:
         
         
         # Photos Button
-        img8=Image.open("D:\PROJECT\FACE RECOGNITION ATTENDANCE SYSTEM\College-Project\pictures-bg\photos.jpeg")
+        img8=Image.open(r"D:\PROJECT\FACE RECOGNITION ATTENDANCE SYSTEM\College-Project\pictures-bg\photos.jpeg")
         img8=img8.resize((220,220))
         self.photos_img=ImageTk.PhotoImage(img8)
         
@@ -114,7 +115,7 @@ class Face_Recognition_System:
         
         
         # Developer Button
-        img9=Image.open("D:\PROJECT\FACE RECOGNITION ATTENDANCE SYSTEM\College-Project\pictures-bg\developer.jpeg")
+        img9=Image.open(r"D:\PROJECT\FACE RECOGNITION ATTENDANCE SYSTEM\College-Project\pictures-bg\developer.jpeg")
         img9=img9.resize((220,220))
         self.developer_img=ImageTk.PhotoImage(img3)
         
@@ -127,7 +128,7 @@ class Face_Recognition_System:
         
         
         # Exit Button
-        img10=Image.open("D:\PROJECT\FACE RECOGNITION ATTENDANCE SYSTEM\College-Project\pictures-bg\exit.jpeg")
+        img10=Image.open(r"D:\PROJECT\FACE RECOGNITION ATTENDANCE SYSTEM\College-Project\pictures-bg\exit.jpeg")
         img10=img10.resize((220,220))
         self.exit_img=ImageTk.PhotoImage(img10)
         
@@ -137,7 +138,7 @@ class Face_Recognition_System:
         b8_1=Button(bg_img_lbl,text="Exit",cursor="hand2",font=("times new roman",15,"bold"),bg="darkblue",fg="white")
         b8_1.place(x=1000,y=650,width=220,height=40)
     def open_img(self):
-        os.startfile("D:\PROJECT\FACE RECOGNITION ATTENDANCE SYSTEM\College-Project\Student pictures")    
+        os.startfile(r"D:\PROJECT\FACE RECOGNITION ATTENDANCE SYSTEM\College-Project\Student pictures")    
         
     # ==============Function Buttons=====================
     def student_details(self):
@@ -147,6 +148,11 @@ class Face_Recognition_System:
     def train_data(self):
         self.new_window=Toplevel(self.root)
         self.app=Train(self.new_window)
+        
+        
+    def face_recognition(self):
+        self.new_window=Toplevel(self.root)
+        self.app=Face_Recognition(self.new_window)
         
 
 
