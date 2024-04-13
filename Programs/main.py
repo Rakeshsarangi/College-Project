@@ -1,10 +1,12 @@
 from tkinter import *
 from tkinter import ttk
+from tkinter import messagebox
 from PIL import Image,ImageTk
 import os
 from students import Student
 from train import Train
 from face_recognition import Face_Recognition
+from help import Help
 
 
 class Face_Recognition_System:
@@ -55,23 +57,10 @@ class Face_Recognition_System:
         self.face_detector_img=ImageTk.PhotoImage(img4)
         
         b2=Button(bg_img_lbl,image=self.face_detector_img,command=self.face_recognition,cursor="hand2")
-        b2.place(x=500,y=100,width=220,height=220)
+        b2.place(x=625,y=100,width=220,height=220)
         
         b2_1=Button(bg_img_lbl,text="Face Detector",command=self.face_recognition,cursor="hand2",font=("times new roman",15,"bold"),bg="darkblue",fg="white")
-        b2_1.place(x=500,y=320,width=220,height=40)
-        
-        
-        
-        # Attendance Button
-        img5=Image.open(r"D:\PROJECT\FACE RECOGNITION ATTENDANCE SYSTEM\College-Project\pictures-bg\attendance.png")
-        img5=img5.resize((220,220))
-        self.attendance_img=ImageTk.PhotoImage(img5)
-        
-        b3=Button(bg_img_lbl,image=self.attendance_img,cursor="hand2")
-        b3.place(x=750,y=100,width=220,height=220)
-        
-        b3_1=Button(bg_img_lbl,text="Attendance",cursor="hand2",font=("times new roman",15,"bold"),bg="darkblue",fg="white")
-        b3_1.place(x=750,y=320,width=220,height=40)
+        b2_1.place(x=625,y=320,width=220,height=40)
         
         
         
@@ -80,10 +69,10 @@ class Face_Recognition_System:
         img6=img6.resize((220,220))
         self.help_desk_img=ImageTk.PhotoImage(img6)
         
-        b4=Button(bg_img_lbl,image=self.help_desk_img,cursor="hand2")
+        b4=Button(bg_img_lbl,image=self.help_desk_img,command=self.help,cursor="hand2")
         b4.place(x=1000,y=100,width=220,height=220)
         
-        b4_1=Button(bg_img_lbl,text="Help Desk",cursor="hand2",font=("times new roman",15,"bold"),bg="darkblue",fg="white")
+        b4_1=Button(bg_img_lbl,text="Help Desk",command=self.help,cursor="hand2",font=("times new roman",15,"bold"),bg="darkblue",fg="white")
         b4_1.place(x=1000,y=320,width=220,height=40)
         
         
@@ -94,10 +83,10 @@ class Face_Recognition_System:
         self.train_data_img=ImageTk.PhotoImage(img7)
         
         b5=Button(bg_img_lbl,image=self.train_data_img,command=self.train_data,cursor="hand2")
-        b5.place(x=250,y=430,width=220,height=220)
+        b5.place(x=250,y=390,width=220,height=220)
         
         b5_1=Button(bg_img_lbl,text="Train Data",command=self.train_data,cursor="hand2",font=("times new roman",15,"bold"),bg="darkblue",fg="white")
-        b5_1.place(x=250,y=650,width=220,height=40)
+        b5_1.place(x=250,y=610,width=220,height=40)
         
         
         
@@ -107,24 +96,10 @@ class Face_Recognition_System:
         self.photos_img=ImageTk.PhotoImage(img8)
         
         b6=Button(bg_img_lbl,image=self.photos_img,cursor="hand2",command=self.open_img)
-        b6.place(x=500,y=430,width=220,height=220)
+        b6.place(x=625,y=390,width=220,height=220)
         
         b6_1=Button(bg_img_lbl,text="Photos",cursor="hand2",command=self.open_img,font=("times new roman",15,"bold"),bg="darkblue",fg="white")
-        b6_1.place(x=500,y=650,width=220,height=40)
-        
-        
-        
-        # Developer Button
-        img9=Image.open(r"D:\PROJECT\FACE RECOGNITION ATTENDANCE SYSTEM\College-Project\pictures-bg\developer.jpeg")
-        img9=img9.resize((220,220))
-        self.developer_img=ImageTk.PhotoImage(img3)
-        
-        b7=Button(bg_img_lbl,image=self.developer_img,cursor="hand2")
-        b7.place(x=750,y=430,width=220,height=220)
-        
-        b7_1=Button(bg_img_lbl,text="Developer",cursor="hand2",font=("times new roman",15,"bold"),bg="darkblue",fg="white")
-        b7_1.place(x=750,y=650,width=220,height=40)
-        
+        b6_1.place(x=625,y=610,width=220,height=40)
         
         
         # Exit Button
@@ -132,11 +107,11 @@ class Face_Recognition_System:
         img10=img10.resize((220,220))
         self.exit_img=ImageTk.PhotoImage(img10)
         
-        b8=Button(bg_img_lbl,image=self.exit_img,cursor="hand2")
-        b8.place(x=1000,y=430,width=220,height=220)
+        b8=Button(bg_img_lbl,image=self.exit_img,command=self.exit,cursor="hand2")
+        b8.place(x=1000,y=390,width=220,height=220)
         
-        b8_1=Button(bg_img_lbl,text="Exit",cursor="hand2",font=("times new roman",15,"bold"),bg="darkblue",fg="white")
-        b8_1.place(x=1000,y=650,width=220,height=40)
+        b8_1=Button(bg_img_lbl,text="Exit",command=self.exit,cursor="hand2",font=("times new roman",15,"bold"),bg="darkblue",fg="white")
+        b8_1.place(x=1000,y=610,width=220,height=40)
     def open_img(self):
         os.startfile(r"D:\PROJECT\FACE RECOGNITION ATTENDANCE SYSTEM\College-Project\Student pictures")    
         
@@ -153,6 +128,18 @@ class Face_Recognition_System:
     def face_recognition(self):
         self.new_window=Toplevel(self.root)
         self.app=Face_Recognition(self.new_window)
+        
+        
+    def help(self):
+        self.new_window=Toplevel(self.root)
+        self.app=Help(self.new_window)
+        
+    def exit(self):
+        self.exit=messagebox.askyesno("Exit","Exit the window")
+        if self.exit>0:
+            self.root.destroy()
+        else:
+            return
         
 
 

@@ -2,9 +2,11 @@ from tkinter import *
 import tkinter as tk
 from tkinter import ttk
 from PIL import Image,ImageTk
+from tkinter import filedialog
 from tkinter import messagebox
 import mysql.connector
 import cv2
+import csv
 
 
 class Student:
@@ -206,7 +208,7 @@ class Student:
         reset_btn=Button(bg_img_lbl,command=self.rest_data,text="Reset",cursor="hand2",font=("times new roman",15,"bold"),bg="darkblue",fg="white")
         reset_btn.place(x=582,y=500,width=194,height=60)
         
-        import_btn=Button(bg_img_lbl,text="Import from Csv",cursor="hand2",font=("times new roman",15,"bold"),bg="darkblue",fg="white")
+        import_btn=Button(bg_img_lbl,text="Import from Csv",command=self.import_csv,cursor="hand2",font=("times new roman",15,"bold"),bg="darkblue",fg="white")
         import_btn.place(x=150,y=570,width=387,height=60)
         
         
@@ -339,19 +341,19 @@ class Student:
         content=self.student_table.item(cursor_focus)
         data=content["values"]
         
-        self.var_br.set(data[1]),
-        self.var_course.set(data[2]),
-        self.var_year.set(data[3]),
-        self.var_sem.set(data[4]),
-        self.var_regd.set(data[5]),
-        self.var_roll.set(data[6]),
-        self.var_name.set(data[7]),
-        self.var_gender.set(data[8]),
-        self.var_dob.set(data[9]),
-        self.var_city.set(data[10]),
-        self.var_phone.set(data[11]),
-        self.var_email.set(data[12]),
-        self.var_rbtn1.set(data[13])
+        self.var_br.set(data[0]),
+        self.var_course.set(data[1]),
+        self.var_year.set(data[2]),
+        self.var_sem.set(data[3]),
+        self.var_regd.set(data[4]),
+        self.var_roll.set(data[5]),
+        self.var_name.set(data[6]),
+        self.var_gender.set(data[7]),
+        self.var_dob.set(data[8]),
+        self.var_city.set(data[9]),
+        self.var_phone.set(data[10]),
+        self.var_email.set(data[11]),
+        self.var_rbtn1.set(data[12])
         
     # ========Update Function=============
     def update_data(self):
@@ -409,7 +411,7 @@ class Student:
                 conn.commit()
                 self.fetch_data()
                 conn.close()
-                messagebox.showinfo("Delete","Student Detailes deleted successfully",parent=self.root)
+                messagebox.showinfo("Delete","Student Details deleted successfully",parent=self.root)
             except Exception as e:
                 messagebox.showerror("Error",f"Due to:{str(e)}",parent=self.root)
                 
@@ -431,7 +433,24 @@ class Student:
         self.var_rbtn1.set("")
         
         
-                
+    def import_csv(self):
+        try:
+            file_path = filedialog.askopenfilename(filetypes=[("CSV files", "*.csv")])
+            if file_path:
+                conn = mysql.connector.connect(host="localhost", username="root", password="Rakesh@347", database="face_recognition")
+                my_cursor = conn.cursor()
+                with open(file_path, 'r') as file:
+                    csv_data = csv.reader(file)
+                    next(csv_data)  # Skip header
+                    for row in csv_data:
+                        my_cursor.execute("INSERT INTO student (Branch, Course, Year, Semester, Regd_no, roll_no, s_Name, Gender, DOB, City, Phone_no, email, Photo) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", row)
+                conn.commit()
+                conn.close()
+                messagebox.showinfo("Success", "Data imported successfully", parent=self.root)
+                self.fetch_data()
+        except Exception as e:
+            messagebox.showerror("Error", f"An error occurred: {str(e)}", parent=self.root)
+
                 
                 
                 

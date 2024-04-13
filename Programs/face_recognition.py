@@ -7,6 +7,8 @@ import mysql.connector
 import cv2
 import os
 import numpy as np
+from time import strftime
+from datetime import datetime
 
 
 class Face_Recognition:
@@ -49,6 +51,21 @@ class Face_Recognition:
         recognition_btn=Button(bg_img_lbl2,command=self.recognition,text="DETECT",cursor="hand2",font=("times new roman",25,"bold"),bg="green",fg="white")
         recognition_btn.place(x=64,y=625,width=387,height=60)
         
+    # ==============Attendance=================
+    def mark_attendance(self,r,n,b):
+        with open(r"D:\PROJECT\FACE RECOGNITION ATTENDANCE SYSTEM\College-Project\Programs\attendance.csv","r+",newline="\n") as f:
+            myDataList=f.readlines()
+            name_list=[]
+            for line in myDataList:
+                entry=line.split((","))
+                name_list.append(entry[0])
+            if ((r not in name_list) and (n not in name_list) and (b not in name_list)):
+                now=datetime.now()
+                d1=now.strftime("%d/%m/%y")
+                dt=now.strftime("%H:%M:%S")
+                f.writelines(f"\n{r},{n},{b},{dt},{d1},present")
+                
+        
     
     
     # ===========Face recognition===========
@@ -67,31 +84,32 @@ class Face_Recognition:
                 conn = mysql.connector.connect(host="localhost", username="root", password="Rakesh@347", database="face_recognition")
                 my_cursor = conn.cursor()
                 
-                my_cursor.execute("SELECT s_name FROM student WHERE s_id = " + f"\'{str(id)}\'")
+                my_cursor.execute("SELECT s_name FROM student WHERE roll_no = " + f"\'{str(id)}\'")
                 n_row = my_cursor.fetchone()
                 if n_row:
                     n = "+".join(n_row)
                 else:
                     n = "Unknown"
                 
-                my_cursor.execute("SELECT roll_no FROM student WHERE s_id = " + f"\'{str(id)}\'")
+                my_cursor.execute("SELECT roll_no FROM student WHERE roll_no = " + f"\'{str(id)}\'")
                 r_row = my_cursor.fetchone()
                 if r_row:
                     r = "+".join(r_row)
                 else:
                     r = "Unknown"
                 
-                my_cursor.execute("SELECT branch FROM student WHERE s_id = " + f"\'{str(id)}\'")
+                my_cursor.execute("SELECT branch FROM student WHERE roll_no = " + f"\'{str(id)}\'")
                 b_row = my_cursor.fetchone()
                 if b_row:
                     b = "+".join(b_row)
                 else:
                     b = "Unknown"
                 
-                if confidence > 80:
+                if confidence > 86:
                     cv2.putText(img, f"Roll: {r}", (x, y - 55), cv2.FONT_HERSHEY_COMPLEX, 0.8, (255, 255, 255), 3)
                     cv2.putText(img, f"Name: {n}", (x, y - 30), cv2.FONT_HERSHEY_COMPLEX, 0.8, (255, 255, 255), 3)
                     cv2.putText(img, f"Branch: {b}", (x, y - 5), cv2.FONT_HERSHEY_COMPLEX, 0.8, (255, 255, 255), 3)
+                    self.mark_attendance(r,n,b)
                 else:
                     cv2.rectangle(img, (x, y), (x + w, y + h), (0, 0, 255), 3)
                     cv2.putText(img, "Unknown Face", (x, y - 55), cv2.FONT_HERSHEY_COMPLEX, 0.8, (255, 255, 255), 3)
@@ -117,7 +135,7 @@ class Face_Recognition:
             img=recog(img,clf,faceCascade)
             cv2.imshow("Welcome To face recognition",img)
             
-            if cv2.waitKey(1)==13:
+            if cv2.waitKey(1)==13 or cv2.getWindowProperty("Welcome To face recognition", cv2.WND_PROP_VISIBLE) < 1:
                 break
         video_cap.release()
         cv2.destroyAllWindows()
