@@ -135,7 +135,7 @@ class Face_Recognition_System:
         self.app=Help(self.new_window)
         
     def exit(self):
-        self.exit=messagebox.askyesno("Exit","Exit the window")
+        self.exit=messagebox.askyesno("Exit","Exit the window",parent=self.root)
         if self.exit>0:
             self.root.destroy()
         else:
