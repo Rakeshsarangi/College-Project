@@ -22,7 +22,7 @@ class Student:
         self.var_br=StringVar()
         self.var_year=StringVar()
         self.var_sem=StringVar()
-        self.var_course=StringVar()
+        self.var_batch=StringVar()
         self.var_regd=StringVar()
         self.var_roll=StringVar()
         self.var_name=StringVar()
@@ -61,8 +61,8 @@ class Student:
         canvas.place(x=774, y=45)
         
         
-        curr_course_lbl=Label(bg_img_lbl,text="CURRENT COURSE INFORMATION",font=("times new roman",15,"bold"),bg="yellow",fg="blue")
-        curr_course_lbl.place(x=0,y=45,width=775,height=40)
+        curr_batch_lbl=Label(bg_img_lbl,text="CURRENT batch INFORMATION",font=("times new roman",15,"bold"),bg="yellow",fg="blue")
+        curr_batch_lbl.place(x=0,y=45,width=775,height=40)
         
         
         #Branch selector
@@ -87,15 +87,13 @@ class Student:
         year_combo.place(x=150,y=160,width=150,height=40)
         
         
-        #Course selector
-        course_lbl=Label(bg_img_lbl,text="Course : ",font=("times new roman",20,"bold"),fg="black",)
-        course_lbl.place(x=350,y=110,width=150,height=40)
+        #batch selector
+        batch_lbl=Label(bg_img_lbl,text="Batch : ",font=("times new roman",20,"bold"),fg="black",)
+        batch_lbl.place(x=350,y=110,width=150,height=40)
         
         
-        course_combo= ttk.Combobox(bg_img_lbl,textvariable=self.var_course,font=("times new roman",15),width=17,state="readonly")
-        course_combo["values"]=("Select Course","C","C++","java","python")
-        course_combo.current(0)
-        course_combo.place(x=500,y=110,width=150,height=40)
+        batch_entry= ttk.Entry(bg_img_lbl,textvariable=self.var_batch,font=("times new roman",15),width=17)
+        batch_entry.place(x=500,y=110,width=150,height=40)
         
         
         #Semester selector
@@ -110,8 +108,8 @@ class Student:
         
         
         
-        curr_course_lbl=Label(bg_img_lbl,text="STUDENT INFORMATION",font=("times new roman",15,"bold"),bg="yellow",fg="blue")
-        curr_course_lbl.place(x=0,y=220,width=775,height=40)
+        curr_batch_lbl=Label(bg_img_lbl,text="STUDENT INFORMATION",font=("times new roman",15,"bold"),bg="yellow",fg="blue")
+        curr_batch_lbl.place(x=0,y=220,width=775,height=40)
         
         #Registration no. entry
         regd_lbl=Label(bg_img_lbl,text="Regd No. : ",font=("times new roman",15,"bold"),fg="black",)
@@ -246,7 +244,7 @@ class Student:
         scroll_x=ttk.Scrollbar(table_frame,orient=HORIZONTAL)
         scroll_y=ttk.Scrollbar(table_frame,orient=VERTICAL)
         
-        self.student_table=ttk.Treeview(table_frame,columns=("Branch","Course","Year","Semester","Regd no","roll no","Name","Gender","DOB","City","Phone no","email","Photo"),xscrollcommand=scroll_x.set,yscrollcommand=scroll_y.set)
+        self.student_table=ttk.Treeview(table_frame,columns=("Branch","batch","Year","Semester","Regd no","roll no","Name","Gender","DOB","City","Phone no","email","Photo"),xscrollcommand=scroll_x.set,yscrollcommand=scroll_y.set)
         
         scroll_x.pack(side=BOTTOM,fill=X)
         scroll_y.pack(side=RIGHT,fill=Y)
@@ -256,7 +254,7 @@ class Student:
         
         #Table heading set
         self.student_table.heading("Branch",text="Branch")
-        self.student_table.heading("Course",text="Course")
+        self.student_table.heading("batch",text="batch")
         self.student_table.heading("Year",text="Year")
         self.student_table.heading("Semester",text="Semester")
         self.student_table.heading("Regd no",text="Regd no")
@@ -273,7 +271,7 @@ class Student:
         
         #Table heading width set
         self.student_table.column("Branch",width=100)
-        self.student_table.column("Course",width=100)
+        self.student_table.column("batch",width=100)
         self.student_table.column("Year",width=100)
         self.student_table.column("Semester",width=100)
         self.student_table.column("Regd no",width=100)
@@ -297,9 +295,9 @@ class Student:
             try:
                 conn=mysql.connector.connect(host="localhost",username="root",password="Rakesh@347",database="face_recognition")
                 my_cursor=conn.cursor()
-                my_cursor.execute("insert into STUDENT (Branch,Course,Year,Semester,Regd_no,roll_no,s_Name,Gender,DOB,City,Phone_no,email,Photo) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",(
+                my_cursor.execute("insert into STUDENT (Branch,batch,Year,Semester,Regd_no,roll_no,s_Name,Gender,DOB,City,Phone_no,email,Photo) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",(
                                                                                                     self.var_br.get(),
-                                                                                                    self.var_course.get(),
+                                                                                                    self.var_batch.get(),
                                                                                                     self.var_year.get(),
                                                                                                     self.var_sem.get(),
                                                                                                     self.var_regd.get(),
@@ -325,7 +323,7 @@ class Student:
     def fetch_data(self):
         conn=mysql.connector.connect(host="localhost",username="root",password="Rakesh@347",database="face_recognition")
         my_cursor=conn.cursor()
-        my_cursor.execute("select Branch,Course,Year,Semester,Regd_no,roll_no,s_Name,Gender,DOB,City,Phone_no,email,Photo from student")
+        my_cursor.execute("select Branch,batch,Year,Semester,Regd_no,roll_no,s_Name,Gender,DOB,City,Phone_no,email,Photo from student")
         data=my_cursor.fetchall()
         
         if len(data)!=0:
@@ -342,7 +340,7 @@ class Student:
         data=content["values"]
         
         self.var_br.set(data[0]),
-        self.var_course.set(data[1]),
+        self.var_batch.set(data[1]),
         self.var_year.set(data[2]),
         self.var_sem.set(data[3]),
         self.var_regd.set(data[4]),
@@ -365,9 +363,9 @@ class Student:
                 if update>0:
                     conn=mysql.connector.connect(host="localhost",username="root",password="Rakesh@347",database="face_recognition")
                     my_cursor=conn.cursor()
-                    my_cursor.execute("update student set Branch=%s,course=%s,Year=%s,Semester=%s,Regd_no=%s,s_name=%s,Gender=%s,DOB=%s,City=%s,Phone_no=%s,email=%s,Photo=%s where Roll_no=%s",(
+                    my_cursor.execute("update student set Branch=%s,batch=%s,Year=%s,Semester=%s,Regd_no=%s,s_name=%s,Gender=%s,DOB=%s,City=%s,Phone_no=%s,email=%s,Photo=%s where Roll_no=%s",(
                                                                                                                                                                                         self.var_br.get(),
-                                                                                                                                                                                        self.var_course.get(),
+                                                                                                                                                                                        self.var_batch.get(),
                                                                                                                                                                                         self.var_year.get(),
                                                                                                                                                                                         self.var_sem.get(),
                                                                                                                                                                                         self.var_regd.get(),
@@ -419,7 +417,7 @@ class Student:
     # ===========reset function=============
     def rest_data(self):
         self.var_br.set("Select Branch"),
-        self.var_br.set("Select Course"),
+        self.var_br.set("Select batch"),
         self.var_year.set("Select Year"),
         self.var_sem.set("Select Semester"),
         self.var_regd.set(""),
@@ -443,7 +441,7 @@ class Student:
                     csv_data = csv.reader(file)
                     next(csv_data)  # Skip header
                     for row in csv_data:
-                        my_cursor.execute("INSERT INTO student (Branch, Course, Year, Semester, Regd_no, roll_no, s_Name, Gender, DOB, City, Phone_no, email, Photo) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", row)
+                        my_cursor.execute("INSERT INTO student (Branch, batch, Year, Semester, Regd_no, roll_no, s_Name, Gender, DOB, City, Phone_no, email, Photo) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", row)
                 conn.commit()
                 conn.close()
                 messagebox.showinfo("Success", "Data imported successfully", parent=self.root)
