@@ -16,6 +16,8 @@ class Login:
         self.root.title("Login")
         self.root.geometry("1530x790+0+0")
         self.root.configure(bg="light blue")
+        self.root.wm_iconbitmap(r"D:\PROJECT\FACE RECOGNITION ATTENDANCE SYSTEM\College-Project\pictures-bg\face_detector.ico")
+
         
         title_lbl=Label(self.root,text="FACE RECOGNITION ATTENDANCE SYSTEM",font=("times new roman",35,"bold"),bg="white",fg="blue")
         title_lbl.place(x=0,y=0,width=1550,height=45)
@@ -63,13 +65,12 @@ class Login:
     def login(self):
         if self.email.get()=="" or self.password.get()=="":
             messagebox.showerror("Error","All Field required")
-            
         else:
             conn=mysql.connector.connect(host="localhost",user="root",password="Rakesh@347",database="face_recognition")
             my_cursor=conn.cursor()
             my_cursor.execute("select * from user where user_email=%s and password=%s",(
-                                                                                         self.email.get(),
-                                                                                         self.password.get()
+                                                                                        self.email.get(),
+                                                                                        self.password.get()
                                                                                         ))
             row=my_cursor.fetchone()
             if row==None:
@@ -79,11 +80,14 @@ class Login:
                 if open_main>0:
                     self.new_window=Toplevel(self.root)
                     self.app=Face_Recognition_System(self.new_window)
+                    # self.root.withdraw()# Destroy the login window
                 else:
                     if not open_main:
                         return
             conn.commit()
-            conn.close()
+            conn.close()  
+
+
             
     
     # ================reset password===================
@@ -94,6 +98,10 @@ class Login:
             messagebox.showerror("Error","Please enter the security question answer",parent=self.root2)    
         elif self.re_password_entry.get()=="":
             messagebox.showerror("Error","Please Enter the new password",parent=self.root2)
+        elif self.re_confirm_password_entry.get()=="":
+            messagebox.showerror("Error","Please Enter the Confirm new password",parent=self.root2)
+        elif self.re_confirm_password_entry.get()!=self.re_confirm_password_entry.get():
+            messagebox.showerror("Error","Password and Confirm password must be same",parent=self.root2)
         else:
             conn=mysql.connector.connect(host="localhost",user="root",password="Rakesh@347",database="face_recognition")
             my_cursor=conn.cursor()
@@ -104,8 +112,8 @@ class Login:
             if row==None:
                 messagebox.showerror("Error","Enter the correct answer",parent=self.root2)
             else:
-                query1=("update user set password=%s where user_email=%s")
-                value1=(self.re_password_entry.get(),self.email.get())
+                query1=("update user set password=%s,c_password=%s where user_email=%s")
+                value1=(self.re_password_entry.get(),self.re_confirm_password_entry.get(),self.email.get())
                 my_cursor.execute(query1,value1)
                 
                 conn.commit()
@@ -157,15 +165,24 @@ class Login:
                 self.re_password_entry= ttk.Entry(self.root2,font=("times new roman",15),width=50)
                 self.re_password_entry.place(x=50,y=275,width=250,height=30)
                 
-                reset_btn=Button(self.root2,text="Reset",command=self.reset_password,cursor="hand2",font=("times new roman",20,"bold"),bd=3,relief=RIDGE,bg="green",fg="white",)
-                reset_btn.place(x=90,y=320,width=175,height=40)
+                re_confirm_password_lbl=Label(self.root2,text="Confirm New Password",font=("times new roman",15,"bold"),fg="black",bg="white")
+                re_confirm_password_lbl.place(x=50,y=315)
                 
-            
+                self.re_confirm_password_entry= ttk.Entry(self.root2,font=("times new roman",15),width=50)
+                self.re_confirm_password_entry.place(x=50,y=350,width=250,height=30)
+                
+                reset_btn=Button(self.root2,text="Reset",command=self.reset_password,cursor="hand2",font=("times new roman",20,"bold"),bd=3,relief=RIDGE,bg="green",fg="white",)
+                reset_btn.place(x=90,y=400,width=175,height=40)
+                
     def register(self):
-        self.new_window=Toplevel(self.root)
-        self.app=Register(self.new_window)
+        win = Toplevel(self.root)
+        app = Register(win)
         
 
+                
+            
+    
+        
 class Register:
     def __init__(self,root):
         self.root=root
@@ -181,9 +198,10 @@ class Register:
         self.var_securityA=StringVar()
         self.var_password=StringVar()
         self.var_c_password=StringVar()
+        self.var_role_type=StringVar()
         
         frame=Frame(self.root,bg="white")
-        frame.place(x=450,y=100,width=600,height=600)
+        frame.place(x=450,y=50,width=600,height=700)
         
         register_lbl=Label(frame,text="Register Here",font=("times new roman",20,"bold","underline"),fg="green",bg="white")
         register_lbl.place(x=220,y=5)
@@ -226,14 +244,22 @@ class Register:
         c_password_entry= ttk.Entry(frame,textvariable=self.var_c_password,font=("times new roman",15),width=50)
         c_password_entry.place(x=220,y=370,width=300,height=30)
         
+        role_lbl=Label(frame,text="Security Question",font=("times new roman",15,"bold"),fg="black",bg="white")
+        role_lbl.place(x=40,y=428)
+        
+        role_combo= ttk.Combobox(frame,textvariable=self.var_role_type,font=("times new roman",15),width=17,state="readonly")
+        role_combo["values"]=("Select Role","Teacher","Student")
+        role_combo.current(0)
+        role_combo.place(x=220,y=430,width=300,height=30)
+        
         register_btn=Button(frame,text="Register",command=self.register_data,cursor="hand2",font=("times new roman",20,"bold"),bd=3,relief=RIDGE,bg="light green",fg="red",)
-        register_btn.place(x=250,y=420,width=150,height=45)
+        register_btn.place(x=250,y=480,width=150,height=45)
         
         or_lbl=Label(frame,text="Or",font=("times new roman",20,"bold"),fg="black",bg="white")
-        or_lbl.place(x=300,y=485)
+        or_lbl.place(x=300,y=545)
         
         login_btn=Button(frame,text="Login",command=self.return_login,cursor="hand2",font=("times new roman",15,"bold"),bg="red",fg="black",)
-        login_btn.place(x=250,y=540,width=150,height=40)
+        login_btn.place(x=250,y=600,width=150,height=40)
         
     # =============function declare=========
     def register_data(self):
@@ -251,23 +277,30 @@ class Register:
             if row!=None:
                 messagebox.showerror("Error","Email Id already exist")
             else:
-                my_cursor.execute("insert into user values(%s,%s,%s,%s,%s,%s)",(
+                my_cursor.execute("insert into user values(%s,%s,%s,%s,%s,%s,%s)",(
                                                                                     self.var_username.get(),
                                                                                     self.var_email.get(),
                                                                                     self.var_securityQ.get(),
                                                                                     self.var_securityA.get(),
                                                                                     self.var_password.get(),
-                                                                                    self.var_c_password.get()
+                                                                                    self.var_c_password.get(),
+                                                                                    self.var_role_type.get()
                                                                                     ))
                 conn.commit()
                 conn.close()                                                                   
                 messagebox.showinfo("Success","Registration Successful",parent=self.root)
         
     def return_login(self):
-        self.root.destroy()
-    
+        if self.root.winfo_exists():  # Check if the root window still exists
+            self.root.destroy()  # Destroy the register window
+        if hasattr(self, 'root2') and self.root2.winfo_exists():  # Check if the root2 window exists
+            self.root2.destroy()  # Destroy the forgot password window if it exists
+        win = Tk()
+        app = Login(win)
+        win.mainloop()
+
         
         
         
-if __name__=="__main__":
+if __name__ == "__main__":
     common()

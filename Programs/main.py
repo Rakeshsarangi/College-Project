@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
 from PIL import Image,ImageTk
+import mysql.connector
 import os
 from students import Student
 from train import Train
@@ -9,9 +10,10 @@ from face_recognition import Face_Recognition
 from help import Help
 
 
+
 class Face_Recognition_System:
-    def __init__(self,root):
-        self.root=root
+    def __init__(self, root):
+        self.root = root
         self.root.geometry("1530x790+0+0")
         self.root.title("FACE RECOGNITION ATTENDANCE SYSTEM")
         
@@ -128,6 +130,7 @@ class Face_Recognition_System:
     def face_recognition(self):
         self.new_window=Toplevel(self.root)
         self.app=Face_Recognition(self.new_window)
+
         
         
     def help(self):
@@ -144,7 +147,7 @@ class Face_Recognition_System:
 
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     root=Tk()
     obj=Face_Recognition_System(root)
     root.mainloop()

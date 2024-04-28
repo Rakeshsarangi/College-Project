@@ -16,54 +16,76 @@ class Face_Recognition:
         self.root=root
         self.root.geometry("1530x790+0+0")
         self.root.title("FACE RECOGNITION")
+        self.root.wm_iconbitmap(r"D:\PROJECT\FACE RECOGNITION ATTENDANCE SYSTEM\College-Project\pictures-bg\face_detector.ico")
+
         
+        self.var_teacher=StringVar()
+        self.var_course=StringVar()
         
         title_lbl=Label(self.root,text="FACE RECOGNITION ATTENDANCE SYSTEM",font=("times new roman",35,"bold"),bg="light green",fg="red")
         title_lbl.place(x=0,y=0,width=1550,height=45)
         
+        # Left side with combo boxes
+        left_frame = Frame(self.root, bg="white")
+        left_frame.place(x=0, y=50, width=773, height=700)
+
+        teacher_label = Label(left_frame, text="Teacher Name:", font=("times new roman", 20), bg="white")
+        teacher_label.grid(row=0, column=0, padx=20, pady=10, sticky="w")
+
+        teacher_combo = ttk.Combobox(left_frame,textvariable=self.var_teacher, font=("times new roman", 15), state="readonly")
+        teacher_combo["values"] = ["Select Teacher Name","Teacher 1", "Teacher 2", "Teacher 3"]
+        teacher_combo.current(0)
+        teacher_combo.grid(row=0, column=1, padx=20, pady=10)
+
+        course_label = Label(left_frame, text="Course Name:", font=("times new roman", 20), bg="white")
+        course_label.grid(row=1, column=0, padx=20, pady=10, sticky="w")
+
+        course_combo = ttk.Combobox(left_frame,textvariable=self.var_course, font=("times new roman", 15), state="readonly")
+        course_combo["values"] = ["Select Course","Course 1", "Course 2", "Course 3"]
+        course_combo.current(0)
+        course_combo.grid(row=1, column=1, padx=20, pady=10)
         
-        #bg image1
-        img1=Image.open(r"D:\PROJECT\FACE RECOGNITION ATTENDANCE SYSTEM\College-Project\pictures-bg\face_recog_bg2.jpg")
-        img1=img1.resize((1550,800))
-        self.bg_img1=ImageTk.PhotoImage(img1)
-        
-        bg_img_lbl1=Label(self.root,image=self.bg_img1)
-        bg_img_lbl1.place(x=0,y=45,width=515,height=800)
-        
-        
-        #bg image2
-        img2=Image.open(r"D:\PROJECT\FACE RECOGNITION ATTENDANCE SYSTEM\College-Project\pictures-bg\face_recog_bg2.jpg")
-        img2=img2.resize((1550,800))
-        self.bg_img2=ImageTk.PhotoImage(img2)
-        
-        bg_img_lbl2=Label(self.root,image=self.bg_img2)
-        bg_img_lbl2.place(x=515,y=45,width=515,height=800)
-        
-        #bg image3
-        img3=Image.open(r"D:\PROJECT\FACE RECOGNITION ATTENDANCE SYSTEM\College-Project\pictures-bg\face_recog_bg2.jpg")
-        img3=img3.resize((1550,800))
-        self.bg_img3=ImageTk.PhotoImage(img3)
-        
-        bg_img_lbl3=Label(self.root,image=self.bg_img3)
-        bg_img_lbl3.place(x=1030,y=45,width=520,height=800)
+        # Right side with the DETECT button and background image
+        right_frame = Frame(self.root)
+        right_frame.place(x=775, y=50, width=773, height=700)
+
+        right_bg_img = Image.open(r"D:\PROJECT\FACE RECOGNITION ATTENDANCE SYSTEM\College-Project\pictures-bg\face_recog_bg2.jpg")
+        right_bg_img = right_bg_img.resize((700, 750))
+        self.right_bg_img = ImageTk.PhotoImage(right_bg_img)
+
+        right_bg_lbl = Label(right_frame, image=self.right_bg_img)
+        right_bg_lbl.pack(fill="both", expand=True)
+
+        recognition_btn = Button(right_frame, command=self.recognition,text="DETECT", font=("times new roman", 25, "bold"), bg="green", fg="white", cursor="hand2")
+        recognition_btn.place(relx=0.5, rely=0.85, anchor="center")
         
         
-        recognition_btn=Button(bg_img_lbl2,command=self.recognition,text="DETECT",cursor="hand2",font=("times new roman",25,"bold"),bg="green",fg="white")
-        recognition_btn.place(x=64,y=625,width=387,height=60)
         
     # ==============Attendance=================
-    def mark_attendance(self,r,n,b):
-        with open(r"D:\PROJECT\FACE RECOGNITION ATTENDANCE SYSTEM\College-Project\Programs\attendance.csv","r+",newline="\n") as f:
-            myDataList=f.readlines()
-            name_list=[]
+
+    def mark_attendance(self, r, n, b):
+        now = datetime.now()
+        date_str = now.strftime("%Y-%m-%d")
+        file_path = f"D:\\PROJECT\\FACE RECOGNITION ATTENDANCE SYSTEM\\College-Project\\Programs\\attendance_{date_str}.csv"
+
+        if not os.path.exists(file_path):
+            with open(file_path, "w", newline="\n") as f:
+                f.write("Roll Number,Name,Branch,Teacher,Course,Time,Date,Status\n")
+
+        # Check if the student's data is already present in the file for the current teacher
+        with open(file_path, "r", newline="\n") as f:
+            myDataList = f.readlines()
             for line in myDataList:
-                entry=line.split((","))
-                name_list.append(entry[0])
-            if ((r not in name_list) and (n not in name_list) and (b not in name_list)):
-                now=datetime.now()
-                d1=now.strftime("%d/%m/%y")
-                dt=now.strftime("%H:%M:%S")
-                f.writelines(f"\n{r},{n},{b},{dt},{d1},present")
+                entry = line.split(",")
+                if entry[0] == r and entry[1] == n and entry[2] == b and entry[3] == self.var_teacher.get():
+                    # Student's data is already present for the current teacher, do not add a new attendance record
+                    return
+
+        # Write to the CSV file
+        with open(file_path, "a", newline="\n") as f:
+            f.write(f"{r},{n},{b},{self.var_teacher.get()},{self.var_course.get()},{now.strftime('%H:%M:%S')},{now.strftime('%d/%m/%Y')},present\n")
+
+
                 
         
     
