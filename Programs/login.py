@@ -2,7 +2,8 @@ from tkinter import *
 from tkinter import ttk
 from PIL import Image,ImageTk
 from tkinter import messagebox
-from main import Face_Recognition_System
+from main import Face_Recognition_System_Student
+from main2 import Face_Recognition_System_Teacher
 import mysql.connector
 
 def common():
@@ -76,16 +77,25 @@ class Login:
             if row==None:
                 messagebox.showerror("Error","Invalid Username and Password")
             else:
-                open_main=messagebox.askyesno("Yesno","Access Only Admin")
-                if open_main>0:
-                    self.new_window=Toplevel(self.root)
-                    self.app=Face_Recognition_System(self.new_window)
-                    # self.root.withdraw()# Destroy the login window
+                role = row[6]  # Assuming role is stored in the 7th column
+                if role == 'Teacher':
+                    self.open_teacher_main_window()
+                elif role == 'Student':
+                    self.open_student_main_window()
                 else:
-                    if not open_main:
-                        return
+                    messagebox.showerror("Error", "Unknown role")
+                    
             conn.commit()
-            conn.close()  
+            conn.close()
+
+    def open_teacher_main_window(self):
+        self.new_window=Toplevel(self.root)
+        self.app=Face_Recognition_System_Teacher(self.new_window)
+
+    def open_student_main_window(self):
+        self.new_window2=Toplevel(self.root)
+        self.app=Face_Recognition_System_Student(self.new_window2)
+  
 
 
             
@@ -289,6 +299,7 @@ class Register:
                 conn.commit()
                 conn.close()                                                                   
                 messagebox.showinfo("Success","Registration Successful",parent=self.root)
+                self.root.destroy()  # Destroy the registration window
         
     def return_login(self):
         if self.root.winfo_exists():  # Check if the root window still exists

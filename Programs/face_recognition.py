@@ -67,7 +67,6 @@ class Face_Recognition:
         now = datetime.now()
         date_str = now.strftime("%Y-%m-%d")
         file_path = f"D:\\PROJECT\\FACE RECOGNITION ATTENDANCE SYSTEM\\College-Project\\Programs\\attendance_{date_str}.csv"
-
         if not os.path.exists(file_path):
             with open(file_path, "w", newline="\n") as f:
                 f.write("Roll Number,Name,Branch,Teacher,Course,Time,Date,Status\n")
@@ -127,7 +126,7 @@ class Face_Recognition:
                 else:
                     b = "Unknown"
                 
-                if confidence > 86:
+                if confidence > 87:
                     cv2.putText(img, f"Roll: {r}", (x, y - 55), cv2.FONT_HERSHEY_COMPLEX, 0.8, (255, 255, 255), 3)
                     cv2.putText(img, f"Name: {n}", (x, y - 30), cv2.FONT_HERSHEY_COMPLEX, 0.8, (255, 255, 255), 3)
                     cv2.putText(img, f"Branch: {b}", (x, y - 5), cv2.FONT_HERSHEY_COMPLEX, 0.8, (255, 255, 255), 3)
